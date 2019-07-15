@@ -1,0 +1,69 @@
+{% include "header.html" %}
+{% include "sidebar.html" %}
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+			<div class="show-top-grids">
+				<div class="col-sm-8 single-left">
+					<div class="song">
+						<div class="song-info">
+                                              <h3>{{ view.mainvideo.title }}</h3><a href="{{ view.mainvideo.target|urlencode }}"> Download </a>	
+					</div>
+						<div class="video-grid">
+                                              <!--<iframe src="https://www.youtube.com/embed/oYiT-vLjhC4" allowfullscreen></iframe>-->
+                                              <video id="player" class="mainvideo"  controls>
+                                                  <source src="{{ view.mainvideo.target|urlencode }}">
+                        </video>
+
+						</div>
+					</div>
+					<div class="clearfix"> </div>
+					<div class="published">
+						<script src="jquery.min.js"></script>
+							<script>
+								$(document).ready(function () {
+                                                                if (shaka.Player.isBrowserSupported()) {
+                                                            // Install built-in polyfills
+                                                            shaka.polyfill.installAll();
+                                                            const shakaInstance = new shaka.Player("#player");
+                                                            shakaInstance.load(source);
+                                                    } else {
+                                                            console.warn('Browser is not supported!');
+                                                    };
+
+									size_li = $("#myList li").size();
+									x=1;
+									$('#myList li:lt('+x+')').show();
+									$('#loadMore').click(function () {
+										x= (x+1 <= size_li) ? x+1 : size_li;
+										$('#myList li:lt('+x+')').show();
+									});
+									$('#showLess').click(function () {
+										x=(x-1<0) ? 1 : x-1;
+										$('#myList li').not(':lt('+x+')').hide();
+									});
+								});
+							</script>
+					</div>
+				</div>
+				<div class="col-md-4 single-right">
+					<h3>Up Next</h3>
+					<div class="single-grid-right">
+                                         {% for video in view.playlist %}
+						<div class="single-right-grids">
+							<div class="col-md-4 single-right-grid-left">
+                                                     <a href="/single?link={{ video.link }}"><img src="images/r1.jpg" alt="" /></a>
+							</div>
+							<div class="col-md-8 single-right-grid-right">
+                                                     <a href="/single?link={{ video.link }}" class="title">{{ video.title }}</a>
+                                                     {% if video.season %}
+                                                     <p>Season: {{ video.season }}</p>
+							   <p>Episode: {{ video.episode_num }}</p>
+                                                    {% endif %}
+							</div>
+							<div class="clearfix"> </div>
+						</div>
+                                          {% endfor %}
+					</div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+                     {% include "footer.html" %}
